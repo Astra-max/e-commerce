@@ -1,27 +1,36 @@
 package com.e_commerce.e_commerce.controller;
 
 import com.e_commerce.e_commerce.dto.PostProduct;
+import com.e_commerce.e_commerce.entity.ProductEntity;
+import com.e_commerce.e_commerce.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
+@RequestMapping("/api/v1/products")
 public class Products {
-    private final List<PostProduct> products = new ArrayList<PostProduct>();
+    private final ProductService productService;
 
-    @GetMapping ("/api/v1/products")
-    public List<PostProduct> getAllProducts() {
-        return products;
+    public Products(ProductService productService) {
+        this.productService = productService;
     }
 
-    @PostMapping("/api/v1/products")
-    public PostProduct savedProduct(@RequestBody PostProduct post) {
-        products.add(post);
-        return post;
+    @GetMapping
+    public List<ProductEntity> getAllProducts() {
+        return productService.getAllProducts();
     }
-    @GetMapping ("/api/v1/products/{productId}")
-    public PostProduct singleProduct(@PathVariable String productId) {
-        return products.get(0);
+
+    @PostMapping
+    public ProductEntity savedProduct(@RequestBody ProductEntity post) {
+        return productService.saveProduct(post);
+    }
+    @GetMapping ("{productId}")
+    public ProductEntity singleProduct(@PathVariable UUID productId) {
+        return productService.getAllProducts().stream()
+                .filter(product -> product.getProductId().equals(productId))
+                .findFirst()
+                .orElse(null);
     }
 }
