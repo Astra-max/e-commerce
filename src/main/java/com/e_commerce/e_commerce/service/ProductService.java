@@ -3,6 +3,8 @@ package com.e_commerce.e_commerce.service;
 import com.e_commerce.e_commerce.dto.UpdateProductDto;
 import com.e_commerce.e_commerce.entity.ProductEntity;
 import com.e_commerce.e_commerce.repository.ProductRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,45 +12,74 @@ import java.util.UUID;
 
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    // get all products from database
-    public List<ProductEntity> getAllProducts()  {
+    // Get all products
+    public List<ProductEntity> getAllProducts() {
         return productRepository.findAll();
     }
 
-    // get single product
-    public ProductEntity getSingleProduct(UUID productId) {
+    // Get single product
+    public ResponseEntity<ProductEntity> getSingleProduct(UUID productId) {
+
         return productRepository.findById(productId)
-                .orElseThrow(()-> new RuntimeException("product not found"));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // add new product to database
-    public ProductEntity saveProduct(ProductEntity product) {
-        return productRepository.save(product);
+    // Save product
+    public ResponseEntity<ProductEntity> saveProduct(ProductEntity product) {
+
+        ProductEntity savedProduct =
+                productRepository.save(product);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedProduct);
     }
 
-    // update single product in database
-    public ProductEntity updateProduct(UUID productId, UpdateProductDto dto) {
-        ProductEntity product = getSingleProduct(productId);
+    // Update product
+    public ResponseEntity<ProductEntity> updateProduct(
+            UUID productId,
+            UpdateProductDto dto) {
 
-        product.setItem(dto.item());
-        product.setDescription(dto.description());
-        product.setQuantity(dto.quantity());
-        product.setCategory(dto.category());
-        product.setPrice(dto.price());
-        product.setAvailablePieces(dto.availablePieces());
-        product.setProductImage(dto.productImage());
+        return productRepository.findById(productId)
+                .map(product -> {
 
-        return productRepository.save(product);
+                    product.setItem(dto.item());
+                    product.setDescription(dto.description());
+                    product.setQuantity(dto.quantity());
+                    product.setCategory(dto.category());
+                    product.setPrice(dto.price());
+                    product.setAvailablePieces(dto.availablePieces());
+                    product.setProductImage(dto.productImage());
+
+                    ProductEntity updated =
+                            productRepository.save(product);
+
+                    return ResponseEntity
+                            .ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // remove single product from database
-    public void removeSingleProduct(UUID productId) {
-        productRepository.deleteById(productId);
+    // Delete product
+    public ResponseEntity<Void> removeSingleProduct(
+            UUID productId) {
+
+        return productRepository.findById(productId)
+                .map(product -> {
+                    productRepository.delete(product);
+
+                    return ResponseEntity
+                            .noContent()
+                            .<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

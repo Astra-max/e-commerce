@@ -1,6 +1,5 @@
 package com.e_commerce.e_commerce.controller;
 
-import com.e_commerce.e_commerce.dto.PostProduct;
 import com.e_commerce.e_commerce.entity.ProductEntity;
 import com.e_commerce.e_commerce.service.ProductService;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +9,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/products")
-public class Products {
+public class ProductController {
     private final ProductService productService;
 
-    public Products(ProductService productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
