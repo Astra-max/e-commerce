@@ -3,6 +3,7 @@ package com.e_commerce.e_commerce.service;
 import com.e_commerce.e_commerce.dto.UpdateProductDto;
 import com.e_commerce.e_commerce.entity.ProductEntity;
 import com.e_commerce.e_commerce.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
