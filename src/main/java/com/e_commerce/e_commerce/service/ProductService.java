@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -72,6 +73,7 @@ public class ProductService {
 
     // Delete product
     public ResponseEntity<Void> removeSingleProduct(
+            @PathVariable
             UUID productId) {
 
         return productRepository.findById(productId)

@@ -2,6 +2,8 @@ package com.e_commerce.e_commerce.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -10,6 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Getter
+@Setter
 @Table(name = "users")
 public class UserEntity {
     @Id
